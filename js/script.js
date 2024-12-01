@@ -1,14 +1,17 @@
+import Agent from "./Agent.js";
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const rows = 15;
-const cols = 15;
+const rows = 30;
+const cols = 30;
 const sizeX = canvas.width / cols;
 const sizeY = canvas.height / rows;
 
 let grid = [];
 let steps = [];
 let doors = [[0, 1], [cols-1, rows-2], [cols-4, 4]];
+let agents = [];
 
 function createGrid(){
     return new Array(rows).fill(0).map(e => new Array(cols).fill(0));
@@ -27,7 +30,7 @@ function calculateSteps(){
 function drawGrid(){
     for(let y = 0; y < rows; y++){
         for(let x = 0; x < cols; x++){
-            ctx.fillStyle = grid[y][x] == 0 ? `hsl(${0}, 100%, ${100-steps[y][x]*(80/13)}%)` : "#000";
+            ctx.fillStyle = grid[y][x] == 0 ? `hsl(${0}, 100%, ${100-steps[y][x]*(80/Math.max(...steps.flat(2)))}%)` : "#55c";
             ctx.fillRect(x * sizeX, y * sizeY, sizeX, sizeY);
             ctx.strokeRect(x * sizeX, y * sizeY, sizeX, sizeY);
         }
@@ -53,22 +56,43 @@ function drawSteps(){
     }
 }
 
+function drawAgents(){
+    agents.forEach(agent => agent.draw(ctx));
+}
+
+function moveAgents(){
+    agents.forEach(agent => agent.move({ grid, steps, doors, agents }));
+}
+
 function load(){
     grid = createGrid();
     steps = createGrid();
     calculateSteps();
-    console.log(steps);
-    loop();
+
+    Array.from({length: 10}).forEach(() => {
+        agents.push(new Agent({
+            rows,
+            cols,
+            sizeX,
+            sizeY
+        }));
+    })    
 }
 
 function loop(){
     canvas.width = canvas.width;
 
     drawGrid();
+    drawAgents();
+    moveAgents();
     drawDoors();
     drawSteps();
-
-    requestAnimationFrame(loop);
+    
+    agents = agents.filter(agent => agent.state);
 }
+
+setInterval(() => {
+    loop();
+}, 300)
 
 window.addEventListener('load', load);
