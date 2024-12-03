@@ -62,8 +62,8 @@ function calculateSteps(){
 function drawGrid(){
     for(let y = 0; y < rows; y++){
         for(let x = 0; x < cols; x++){
-            ctx.fillStyle = grid[y][x] == 1 ? "#000" : `hsl(0, 100%, ${100-steps[y][x]*(80/Math.max(...steps.flat(2).filter(num => num < 255)))}%)`;
-            if(grid[y][x] == "A") ctx.fillStyle = "#055";
+            ctx.fillStyle = grid[y][x] == 1 ? "#000" : `hsl(0, 100%, ${100-steps[y][x]*(90/Math.max(...steps.flat(2).filter(num => num < 255)))}%)`;
+            // if(grid[y][x] == "A") ctx.fillStyle = "#055";
 
             // if(grid[y][x] == 0) ctx.fillStyle = "#000";
             // if(grid[y][x] == 1) ctx.fillStyle = "#fff";
@@ -106,7 +106,7 @@ async function load(){
     steps = createGrid();
     calculateSteps();
 
-    Array.from({length: 10}).forEach(() => {
+    Array.from({length: 50}).forEach(() => {
         agents.push(new Agent({
             rows,
             cols,
