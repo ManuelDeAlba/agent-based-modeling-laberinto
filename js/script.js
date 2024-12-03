@@ -34,7 +34,7 @@ function loadMap(src, width, height){
                 let b = data[i + 2];
 
                 let avg = (r + g + b) / 3;
-                res.push(avg);
+                res.push(avg == 255 ? 0 : 1);
             }
 
             const reshaped = reshapeArray(res, rows, cols);
@@ -52,7 +52,7 @@ function calculateSteps(){
     for(let y = 0; y < rows; y++){
         for(let x = 0; x < cols; x++){
             steps[y][x] = Math.min(...doors.map(([xDoor, yDoor]) => {
-                if(grid[y][x] == 0) return 255;
+                if(grid[y][x] == 1) return 255;
                 return Math.abs(xDoor - x) + Math.abs(yDoor - y);
             }))
         }
@@ -62,11 +62,11 @@ function calculateSteps(){
 function drawGrid(){
     for(let y = 0; y < rows; y++){
         for(let x = 0; x < cols; x++){
-            ctx.fillStyle = grid[y][x] == 0 ? "#000" : `hsl(0, 100%, ${100-steps[y][x]*(80/Math.max(...steps.flat(2).filter(num => num < 255)))}%)`;
+            ctx.fillStyle = grid[y][x] == 1 ? "#000" : `hsl(0, 100%, ${100-steps[y][x]*(80/Math.max(...steps.flat(2).filter(num => num < 255)))}%)`;
             if(grid[y][x] == "A") ctx.fillStyle = "#055";
 
             // if(grid[y][x] == 0) ctx.fillStyle = "#000";
-            // if(grid[y][x] == 255) ctx.fillStyle = "#fff";
+            // if(grid[y][x] == 1) ctx.fillStyle = "#fff";
             ctx.fillRect(x * sizeX, y * sizeY, sizeX, sizeY);
             ctx.strokeRect(x * sizeX, y * sizeY, sizeX, sizeY);
         }
@@ -87,8 +87,7 @@ function drawSteps(){
             ctx.textBaseline = "middle";
             ctx.font = "8px Arial";
 
-            ctx.fillStyle = "#000";
-            if(grid[y][x] == 0) ctx.fillStyle = "#fff";
+            ctx.fillStyle = "#fff";
             ctx.fillText(steps[y][x], x * sizeX + sizeX / 2, y * sizeY + sizeY / 2);
         }
     }
