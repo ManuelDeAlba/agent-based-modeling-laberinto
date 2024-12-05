@@ -105,11 +105,7 @@ function moveAgents(){
     agents.forEach(agent => agent.move({ grid, steps, doors, agents }));
 }
 
-async function load(){
-    grid = await loadMap("/mapa.png", rows, cols);
-    steps = createGrid();
-    calculateSteps();
-
+function createAgents(){
     Array.from({length: 50}).forEach(() => {
         agents.push(new Agent({
             rows,
@@ -118,7 +114,15 @@ async function load(){
             sizeY,
             grid
         }));
-    })    
+    })
+}
+
+async function load(){
+    grid = await loadMap("/mapa2.png", rows, cols);
+    steps = createGrid();
+    calculateSteps();
+
+    createAgents();
 }
 
 function loop(){
@@ -131,13 +135,28 @@ function loop(){
     if(debug) drawSteps();
     
     agents = agents.filter(agent => agent.state);
+    if(agents.length == 0) createAgents();
 }
 
 setInterval(() => {
     loop();
-}, 300)
+}, 50)
 
 window.addEventListener('load', load);
 window.addEventListener('keydown', e => {
     if(e.code == "KeyD") debug = !debug;
+})
+canvas.addEventListener('click', e => {
+    const x = Math.floor(e.offsetX / sizeX);
+    const y = Math.floor(e.offsetY / sizeY);
+
+    agents.push(new Agent({
+        x,
+        y,
+        rows,
+        cols,
+        sizeX,
+        sizeY,
+        grid
+    }));
 })

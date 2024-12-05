@@ -1,10 +1,10 @@
 export default class Agent{
-    constructor({rows, cols, sizeX, sizeY, grid}){
+    constructor({x, y, rows, cols, sizeX, sizeY, grid}){
         this.rows = rows;
         this.cols = cols;
 
-        this.x = Math.floor(Math.random() * cols);
-        this.y = Math.floor(Math.random() * rows);
+        this.x = x ?? Math.floor(Math.random() * cols);
+        this.y = y ?? Math.floor(Math.random() * rows);
         while(grid[this.y][this.x] == 1){
             this.x = Math.floor(Math.random() * cols);
             this.y = Math.floor(Math.random() * rows);
