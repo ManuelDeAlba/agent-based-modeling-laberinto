@@ -29,7 +29,7 @@ export default class Agent{
         for(let i = -1; i < 2; i++){
             for(let j = -1; j < 2; j++){                
                 let newSteps = steps[this.y + i]?.[this.x + j];
-                if(newSteps != undefined && (minSteps == undefined || newSteps < minSteps)){
+                if(newSteps != undefined && (minSteps == undefined || newSteps <= minSteps)){
                     // If there's an agent, choose other cell
                     const isCellTaken = agents.some(agent => this.x + j == agent.x && this.y + i == agent.y && (i != 0 || j != 0));
                     if(!isCellTaken){
