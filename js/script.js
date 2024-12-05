@@ -4,6 +4,8 @@ import { reshapeArray } from "./utils.js";
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+let debug = false;
+
 const rows = 30;
 const cols = 30;
 const sizeX = canvas.width / cols;
@@ -62,11 +64,13 @@ function calculateSteps(){
 function drawGrid(){
     for(let y = 0; y < rows; y++){
         for(let x = 0; x < cols; x++){
-            ctx.fillStyle = grid[y][x] == 1 ? "#000" : `hsl(0, 100%, ${100-steps[y][x]*(90/Math.max(...steps.flat(2).filter(num => num < 255)))}%)`;
-            // if(grid[y][x] == "A") ctx.fillStyle = "#055";
+            if(debug){
+                ctx.fillStyle = grid[y][x] == 1 ? "#000" : `hsl(0, 100%, ${100-steps[y][x]*(90/Math.max(...steps.flat(2).filter(num => num < 255)))}%)`;
+            } else {
+                if(grid[y][x] == 1) ctx.fillStyle = "#000";
+                else ctx.fillStyle = "#fff";
+            }
 
-            // if(grid[y][x] == 0) ctx.fillStyle = "#000";
-            // if(grid[y][x] == 1) ctx.fillStyle = "#fff";
             ctx.fillRect(x * sizeX, y * sizeY, sizeX, sizeY);
             ctx.strokeRect(x * sizeX, y * sizeY, sizeX, sizeY);
         }
@@ -124,7 +128,7 @@ function loop(){
     drawAgents();
     moveAgents();
     drawDoors();
-    drawSteps();
+    if(debug) drawSteps();
     
     agents = agents.filter(agent => agent.state);
 }
@@ -134,3 +138,6 @@ setInterval(() => {
 }, 300)
 
 window.addEventListener('load', load);
+window.addEventListener('keydown', e => {
+    if(e.code == "KeyD") debug = !debug;
+})
